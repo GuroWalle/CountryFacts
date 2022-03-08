@@ -69,10 +69,9 @@ export default {
 
 <style>
 .countries__form {
-  background: pink;
   display: flex;
   justify-content: center;
-  padding: 2rem;
+  margin: var(--size--medium);
 }
 
 .countries__input {
@@ -87,7 +86,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin: var(--size--medium);
+  margin: 0 var(--size--big);
   background: burlywood;
   padding: 5rem;
 }
