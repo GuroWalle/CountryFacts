@@ -159,7 +159,7 @@ export default {
   background: #e7e7e7;
   border: 0.8rem solid #d4d4d4;
   padding: var(--size--medium) var(--size--small);
-  width: 70rem;
+  width: 80%;
 }
 
 .data__facts h1 {
@@ -185,6 +185,7 @@ p {
 .data__images {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .data__images img {
@@ -198,7 +199,7 @@ p {
   max-width: 23rem;
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 800px) {
   .countries {
     flex-direction: column;
   }
@@ -227,7 +228,7 @@ p {
     padding: var(--size--small) var(--size--small);
     border-top: 0.4rem solid #d4d4d4;
     border-bottom: 0.4rem solid #d4d4d4;
-    width: 25rem;
+    width: 100%;
   }
 
   .data__facts h1 {
