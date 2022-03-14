@@ -1,8 +1,9 @@
+<!-- Gotten help from: https://www.youtube.com/watch?v=5Uxe_MNd6go&list=PLgiAmmJALlgzvpogJwhFytLmh6tI-TQSN&index=13&ab_channel=SomTeaCodes -->
+
 <template>
   <div class="countries">
+    <!-- .prevent prevnts the site from refreshing -->
     <form class="countries__form" v-on:submit.prevent="fetchNewCountry">
-      <!--.prevent prevnts the site to refresh-->
-
       <input
         type="text"
         placeholder="Search for a country..."
@@ -12,10 +13,10 @@
       />
     </form>
 
-    <p class="countries__info" v-if="onMainSite">
+    <p class="countries__app-info" v-if="onMainSite">
       Find basic facts about every country in the world!
     </p>
-    <p class="countries__error" v-if="countryFound">No country found...</p>
+    <p class="countries__error" v-if="noCountryFound">No country found...</p>
 
     <div class="countries__data" v-if="visible">
       <div class="data__facts">
@@ -34,7 +35,7 @@
         </h2>
         <h2>
           <p>Location:</p>
-          {{ continent }}, {{ subregion }}
+          {{ region }}, {{ subregion }}
         </h2>
         <h2>
           <p>Population:</p>
@@ -43,9 +44,9 @@
       </div>
       <div class="data__images">
         <img :src="flag" alt="" />
-        <p>Flag</p>
+        <p>{{ commonName }}'s flag</p>
         <img :src="coatOfArms" alt="" />
-        <p>Coat of arms</p>
+        <p>{{ commonName }}'s coat of arms</p>
       </div>
     </div>
   </div>
@@ -56,19 +57,21 @@ export default {
   data() {
     return {
       countrySearch: "",
+
       visible: false,
-      countryFound: false,
+      noCountryFound: false,
       onMainSite: true,
 
+      // Text
       commonName: "",
       officialName: "",
       nativeName: "",
       capital: "",
-      continent: "",
+      region: "",
       subregion: "",
       population: "",
 
-      // images
+      // Images
       flag: "",
       coatOfArms: "",
     };
@@ -77,36 +80,36 @@ export default {
   methods: {
     async fetchNewCountry() {
       console.log(this.countrySearch);
+      // Fetches data from the api with the same name as searched
       const url = `https://restcountries.com/v3.1/name/${this.countrySearch}`;
       const result = await fetch(url);
 
       try {
         const output = await result.json();
+
         this.commonName = output[0].name.common;
         this.officialName = output[0].name.official;
-        this.nativeName = output[0].name.nativeName;
-
+        // I have trouble with this one since nativeName is an object and not an array
+        this.nativeName = output[0].name.nativeName.common;
         this.capital = output[0].capital[0];
-        this.continent = output[0].continents[0];
+        this.region = output[0].region;
         this.subregion = output[0].subregion;
         this.population = output[0].population;
-
-        // clears the input after searching is done
-        this.countrySearch = "";
-
-        // images
         this.flag = output[0].flags.svg;
         this.coatOfArms = output[0].coatOfArms.svg;
 
-        // if country found show data
+        // Clears the input after pressing enter / submitting
+        this.countrySearch = "";
+
+        // If country found show data
         this.visible = true;
-        this.countryFound = false;
+        this.noCountryFound = false;
         this.onMainSite = false;
       } catch (error) {
-        // if country not found show error
+        // If country not found show error
         console.log(error);
         this.visible = false;
-        this.countryFound = true;
+        this.noCountryFound = true;
         this.onMainSite = false;
       }
     },
@@ -133,16 +136,25 @@ export default {
   font-size: var(--font--caption);
 }
 
-.countries__info {
+/* shows if onMainSite = true */
+.countries__app-info {
   margin: var(--size--big);
   font-size: var(--font--body);
   color: rgba(0, 0, 0, 0.822);
 }
 
+/* shows if noCountryFound = false */
+.countries__error {
+  font-size: var(--font--body);
+  color: red;
+  margin: var(--size--big) 0;
+}
+
+/* shows if visible = true */
 .countries__data {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-evenly;
   margin: 0 var(--size--big);
   background: #e7e7e7;
   border: 0.8rem solid #d4d4d4;
@@ -176,18 +188,55 @@ p {
 }
 
 .data__images img {
-  max-width: 20rem;
+  max-width: 23rem;
   max-height: 25rem;
   margin-top: var(--size--big);
 }
 
 .data__images p {
   margin-top: 2rem;
+  max-width: 23rem;
 }
 
-.countries__error {
-  font-size: var(--font--body);
-  color: red;
-  margin: var(--size--big) 0;
+@media screen and (max-width: 400px) {
+  .countries {
+    flex-direction: column;
+  }
+
+  .countries__input {
+    width: 20rem;
+  }
+
+  /* shows if onMainSite = true */
+  .countries__app-info {
+    font-size: var(--font--caption);
+    margin: var(--size--medium) var(--size--medium);
+  }
+
+  /* shows if noCountryFound = false */
+  .countries__error {
+    font-size: var(--font--caption);
+    margin: var(--size--medium) var(--size--medium);
+  }
+
+  /* shows if visible = true */
+  .countries__data {
+    flex-direction: column;
+    margin: 0 var(--size--small);
+    border: none;
+    padding: var(--size--small) var(--size--small);
+    border-top: 0.4rem solid #d4d4d4;
+    border-bottom: 0.4rem solid #d4d4d4;
+    width: 25rem;
+  }
+
+  .data__facts h1 {
+    margin: var(--size--small) 0;
+    font-size: var(--font--heading); /* NOT SURE YET */
+  }
+
+  .data__images img {
+    margin-top: var(--size--medium);
+  }
 }
 </style>
