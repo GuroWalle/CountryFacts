@@ -89,14 +89,22 @@ export default {
 
         this.commonName = output[0].name.common;
         this.officialName = output[0].name.official;
-        // I have trouble with this one since nativeName is an object and not an array
-        this.nativeName = output[0].name.nativeName.common;
         this.capital = output[0].capital[0];
         this.region = output[0].region;
         this.subregion = output[0].subregion;
         this.population = output[0].population;
         this.flag = output[0].flags.svg;
         this.coatOfArms = output[0].coatOfArms.svg;
+
+        // Native name
+        // find the name of all properites in the object
+        for (var propertyName in output[0].name.nativeName) {
+          // Show the name of the property and use it to retrieve the object itself (and not just the name)
+          this.nativeName =
+            propertyName +
+            ": " +
+            output[0].name.nativeName[propertyName].common;
+        }
 
         // Clears the input after pressing enter / submitting
         this.countrySearch = "";
