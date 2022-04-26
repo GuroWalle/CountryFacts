@@ -12,6 +12,9 @@
         class="countries__input"
       />
     </form>
+    <button class="countries__search--button" @click="fetchNewCountry">
+      Search
+    </button>
 
     <p class="countries__app-info" v-if="onMainSite">
       Find basic facts about every country in the world!
@@ -141,6 +144,11 @@ export default {
   border-radius: 2rem;
   padding: 1rem;
   width: 40rem;
+  font-size: var(--font--caption);
+}
+
+.countries__search--button {
+  margin-bottom: 3rem;
   font-size: var(--font--caption);
 }
 
