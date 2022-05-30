@@ -3,13 +3,13 @@
 <template>
   <div class="countries">
     <!-- .prevent prevnts the site from refreshing -->
-    <form class="countries__form" v-on:submit.prevent="fetchNewCountry">
+    <form v-on:submit.prevent="fetchNewCountry">
       <input
         type="text"
         placeholder="Search for a country..."
         v-model="countrySearch"
         autocomplete="off"
-        class="countries__input"
+        class="countries__search-bar"
       />
     </form>
     <button class="countries__search--button" @click="fetchNewCountry">
@@ -19,7 +19,7 @@
     <p class="countries__app-info" v-if="onMainSite">
       Find basic facts about every country in the world!
     </p>
-    <p class="countries__error" v-if="noCountryFound">No country found...</p>
+    <p class="countries__error" v-if="countryFound">No country found...</p>
 
     <div class="countries__data" v-if="visible">
       <div class="data__facts">
@@ -56,204 +56,199 @@
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      countrySearch: "",
+  export default {
+    data() {
+      return {
+        countrySearch: "",
 
-      visible: false,
-      noCountryFound: false,
-      onMainSite: true,
+        visible: false,
+        countryFound: false,
+        onMainSite: true,
 
-      // Text
-      commonName: "",
-      officialName: "",
-      nativeName: "",
-      capital: "",
-      region: "",
-      subregion: "",
-      population: "",
+        // Text
+        commonName: "",
+        officialName: "",
+        nativeName: "",
+        capital: "",
+        region: "",
+        subregion: "",
+        population: "",
 
-      // Images
-      flag: "",
-      coatOfArms: "",
-    };
-  },
-
-  methods: {
-    async fetchNewCountry() {
-      console.log(this.countrySearch);
-      // Fetches data from the api with the same name as searched
-      const url = `https://restcountries.com/v3.1/name/${this.countrySearch}`;
-      const result = await fetch(url);
-
-      try {
-        const output = await result.json();
-
-        this.commonName = output[0].name.common;
-        this.officialName = output[0].name.official;
-        this.capital = output[0].capital[0];
-        this.region = output[0].region;
-        this.subregion = output[0].subregion;
-        this.population = output[0].population;
-        this.flag = output[0].flags.svg;
-        this.coatOfArms = output[0].coatOfArms.svg;
-
-        // Native name
-        // find the name of all properites in the object
-        for (var propertyName in output[0].name.nativeName) {
-          // Show the name of the property and use it to retrieve the object itself (and not just the name)
-          this.nativeName =
-            propertyName +
-            ": " +
-            output[0].name.nativeName[propertyName].common;
-        }
-
-        // Clears the input after pressing enter / submitting
-        this.countrySearch = "";
-
-        // If country found show data
-        this.visible = true;
-        this.noCountryFound = false;
-        this.onMainSite = false;
-      } catch (error) {
-        // If country not found show error
-        console.log(error);
-        this.visible = false;
-        this.noCountryFound = true;
-        this.onMainSite = false;
-      }
+        // Images
+        flag: "",
+        coatOfArms: "",
+      };
     },
-  },
-};
+
+    methods: {
+      async fetchNewCountry() {
+        console.log(this.countrySearch);
+        // Fetches data from the api with the same name as searched
+        const url = `https://restcountries.com/v3.1/name/${this.countrySearch}`;
+        const result = await fetch(url);
+
+        try {
+          const output = await result.json();
+
+          this.commonName = output[0].name.common;
+          this.officialName = output[0].name.official;
+          this.capital = output[0].capital[0];
+          this.region = output[0].region;
+          this.subregion = output[0].subregion;
+          this.population = output[0].population;
+          this.flag = output[0].flags.svg;
+          this.coatOfArms = output[0].coatOfArms.svg;
+
+          // Native name
+          // find the name of all properites in the object
+          for (var propertyName in output[0].name.nativeName) {
+            // Show the name of the property and use it to retrieve the object itself (and not just the name)
+            this.nativeName =
+              propertyName +
+              ": " +
+              output[0].name.nativeName[propertyName].common;
+          }
+
+          // Clears the input after pressing enter / submitting
+          this.countrySearch = "";
+
+          // If country found show data
+          this.visible = true;
+          this.countryFound = false;
+          this.onMainSite = false;
+        } catch (error) {
+          // If country not found show error
+          console.log(error);
+          this.visible = false;
+          this.countryFound = true;
+          this.onMainSite = false;
+        }
+      },
+    },
+  };
 </script>
 
 <style>
-.countries {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  .countries {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+  }
 
-.countries__form {
-  margin: var(--size--medium);
-}
+  .countries__search-bar {
+    padding: 0.7rem 10rem;
+    border: 0.3rem solid black;
+    border-radius: 2rem;
+    margin: var(--size-big) 0 var(--size-medium) 0;
+    font-size: var(--font-body);
+  }
 
-.countries__input {
-  border: 2px solid black;
-  border-radius: 2rem;
-  padding: 1rem;
-  width: 40rem;
-  font-size: var(--font--caption);
-}
-
-.countries__search--button {
-  margin-bottom: 3rem;
-  font-size: var(--font--caption);
-}
+  .countries__search--button {
+    padding: 0.7rem 3rem;
+    border-radius: 2rem;
+    border: 0.2rem solid black;
+    font-size: var(--font-caption);
+    color: black;
+    background: lightgrey;
+  }
 
 /* shows if onMainSite = true */
-.countries__app-info {
-  margin: var(--size--big);
-  font-size: var(--font--body);
-  color: rgba(0, 0, 0, 0.822);
-}
+  .countries__app-info {
+    margin: var(--size-big) 0;
+    text-align: center;
+    font-size: var(--font-body);
+  }
 
-/* shows if noCountryFound = false */
-.countries__error {
-  font-size: var(--font--body);
-  color: red;
-  margin: var(--size--big) 0;
-}
+/* shows if countryFound = false */
+  .countries__error {
+    margin: var(--size-big) 0;
+    text-align: center;
+    font-size: var(--font-body);
+    color: red;
+  }
 
 /* shows if visible = true */
-.countries__data {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  margin: 0 var(--size--big);
-  background: #e7e7e7;
-  border: 0.8rem solid #d4d4d4;
-  padding: var(--size--medium) var(--size--small);
-  width: 80%;
-}
-
-.data__facts h1 {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin: var(--size--big) 0;
-  border-bottom: 4px solid black;
-  font-size: var(--font--heading);
-  max-width: 30rem;
-}
-
-p {
-  font-size: var(--font--caption);
-}
-
-.data__facts h2 {
-  margin: var(--size--big) 0;
-  font-size: var(--font--body);
-  max-width: 30rem;
-}
-
-.data__images {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.data__images img {
-  max-width: 23rem;
-  max-height: 25rem;
-  margin-top: var(--size--big);
-}
-
-.data__images p {
-  margin-top: 2rem;
-  max-width: 23rem;
-}
-
-@media screen and (max-width: 800px) {
-  .countries {
-    flex-direction: column;
-  }
-
-  .countries__input {
-    width: 20rem;
-  }
-
-  /* shows if onMainSite = true */
-  .countries__app-info {
-    font-size: var(--font--caption);
-    margin: var(--size--medium) var(--size--medium);
-  }
-
-  /* shows if noCountryFound = false */
-  .countries__error {
-    font-size: var(--font--caption);
-    margin: var(--size--medium) var(--size--medium);
-  }
-
-  /* shows if visible = true */
   .countries__data {
-    flex-direction: column;
-    margin: 0 var(--size--small);
-    border: none;
-    padding: var(--size--small) var(--size--small);
-    border-top: 0.4rem solid #d4d4d4;
-    border-bottom: 0.4rem solid #d4d4d4;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 80%;
+    padding: 3rem;
+    border: 0.8rem solid #d4d4d4;
+    margin: var(--size-medium);
+    background: #e7e7e7;
+  }
+
+  .data__facts {
+    max-width: 30rem;
     width: 100%;
   }
 
   .data__facts h1 {
-    margin: var(--size--small) 0;
-    font-size: var(--font--heading); /* NOT SURE YET */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border-bottom: 0.3rem solid black;
+    font-size: var(--font-heading);
+  }
+
+  p {
+    font-size: var(--font-caption);
+  }
+
+  .data__facts h2 {
+    margin: var(--size-big) 0;
+    font-size: var(--font-body);
+  }
+
+  .data__images {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .data__images img {
-    margin-top: var(--size--medium);
+    max-width: 23rem;
+    max-height: 25rem;
+    margin-top: var(--size-big);
   }
-}
+
+  .data__images p {
+    margin-top: 2rem;
+    max-width: 23rem;
+  }
+
+  @media screen and (max-width: 500px){
+    .countries__search-bar {
+      padding: 0.9rem 4rem;
+      border: 0.2rem solid black;
+      font-size: var(--font-caption);
+    }
+
+  /* shows if onMainSite = true */
+    .countries__app-info {
+      font-size: var(--font-caption);
+    }
+
+  /* shows if visible = true */
+    .countries__data {
+      flex-direction: column;
+      width: 100%;
+      padding: var(--size-small) var(--size-small);
+      border: 0.4rem solid #d4d4d4;
+      margin: var(--size-medium);
+    }
+
+    .data__facts h1 {
+      margin: var(--size-small) 0;
+      font-size: var(--font-heading);
+    }
+
+    .data__images img {
+      margin-top: var(--size-medium);
+    }
+  }
+
 </style>

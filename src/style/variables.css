@@ -1,13 +1,13 @@
-:root {	
+:root {
 	--font-family: 'Monaco';
 
-	--font--heading: 3.125rem;
-	--font--body: 1.875rem;
-	--font--caption: 1.25rem;
+	--font-heading: 3.125rem;
+	--font-body: 1.875rem;
+	--font-caption: 1.25rem;
 
-	--size--big: 6rem;
-	--size--medium: 4rem;
-	--size--small: 2.5rem;
+	--size-big: 6rem;
+	--size-medium: 4rem;
+	--size-small: 2.5rem;
 }
 
 @font-face {
@@ -15,4 +15,4 @@
 	font-style: normal;
 	font-weight: normal;
 	src: local('Monaco'), url('Monaco.woff') format('woff');
-	}
+}
